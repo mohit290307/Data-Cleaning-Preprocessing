@@ -1,0 +1,38 @@
+import pandas as pd
+
+# Step 1: Load raw dataset
+# Replace 'raw_sales_data.csv' with your actual file name
+df = pd.read_csv("raw_sales_data.csv")
+
+# Step 2: Inspect data
+print("Initial Data:")
+print(df.head())
+
+# Step 3: Handle missing values
+# Example: Fill missing 'Sales' with 0, drop rows missing 'Date'
+df['Sales'] = df['Sales'].fillna(0)
+df = df.dropna(subset=['Date'])
+
+# Step 4: Remove duplicates
+df = df.drop_duplicates()
+
+# Step 5: Standardize column names
+df.columns = df.columns.str.strip().str.lower().str.replace(" ", "_")
+
+# Step 6: Convert data types
+df['date'] = pd.to_datetime(df['date'], errors='coerce')
+df['sales'] = pd.to_numeric(df['sales'], errors='coerce')
+
+# Step 7: Handle invalid values
+# Example: Remove negative sales
+df = df[df['sales'] >= 0]
+
+# Step 8: Feature engineering (optional)
+# Example: Extract month and year from date
+df['year'] = df['date'].dt.year
+df['month'] = df['date'].dt.month
+
+# Step 9: Save cleaned dataset
+df.to_csv("cleaned_sales_data.csv", index=False)
+
+print("Cleaned dataset saved as cleaned_sales_data.csv")
